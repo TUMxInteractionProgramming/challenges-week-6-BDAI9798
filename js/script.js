@@ -27,10 +27,9 @@ var currentLocation = {
  * Switch channels name in the right app bar
  * @param channelObject
  */
-function switchChannel(channelObject) {
+function switchChannel(channelObject,channelElement) {
     // Log the channel switch
-    console.log("Tuning in to channel", channelObject);
-
+    console.log("Tuning in to channel", channelObject.name);
     // #10 #new: switching channels aborts "create new channel"-mode
     abortCreationMode();
 
@@ -51,8 +50,9 @@ function switchChannel(channelObject) {
 
     /* highlight the selected #channel.
        This is inefficient (jQuery has to search all channel list items), but we'll change it later on */
-    $('#channels li').removeClass('selected');
-    $('#channels li:contains(' + channelObject.name + ')').addClass('selected');
+       $('#channels li').removeClass('selected');
+       $(channelElement).addClass('selected');
+    //  $('#channels li:contains(' + channelObject.name + ')').addClass('selected');
 
     /* store selected channel in global variable */
     currentChannel = channelObject;
@@ -225,6 +225,9 @@ function listChannels(criterion) {
     for (i = 0; i < channels.length; i++) {
         $('#channels ul').append(createChannelElement(channels[i]));
     };
+    
+   
+    
 }
 
 /**
@@ -311,8 +314,11 @@ function createChannelElement(channelObject) {
     // create a channel
     var channel = $('<li>').text(channelObject.name);
 
+
     // create and append channel meta
     var meta = $('<span>').addClass('channel-meta').appendTo(channel);
+
+   
 
     // The star including star functionality.
     // Since we don't need any further children, we don't need any variables (references)
@@ -324,9 +330,21 @@ function createChannelElement(channelObject) {
 
     // The chevron
     $('<i>').addClass('fas').addClass('fa-chevron-right').appendTo(meta);
+    
+    
+    
+    $('li').click(function(){
+        var Name = $(this).text();
+        function isclickedchannel(channel){
+            return channel.name == Name;}
+        
+       var thechannelobject = channels.filter(isclickedchannel)[0];
 
+        switchChannel(thechannelobject,this);
+     });
     // return the complete channel
     return channel;
+    
 }
 
 /**
